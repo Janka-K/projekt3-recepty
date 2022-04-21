@@ -53,6 +53,7 @@ generateContent();
 
 
 
+// JE POTREBA VYRESIT FILTROVANI NA ZAKLADE NAZVU RECEPTU
 /*
 
 function myFunction() {
