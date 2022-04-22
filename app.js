@@ -18,6 +18,7 @@ recept-hodnoceni, recept-nazev, recept-popis.
 6) Poslední vybraný recept ulož do Local Storage, aby se při novém otevření aplikace načetl.
 */
 
+generateContent();
 
 function generateContent(){
 
@@ -49,28 +50,23 @@ function generateContent(){
 }
 
 
-generateContent();
+function filterFunction(){
+    let input = document.getElementById("hledat");
+    let bigLetters= input.value.toUpperCase();
+    let recipe = document.querySelectorAll(".recept");
 
-
-
-// JE POTREBA VYRESIT FILTROVANI NA ZAKLADE NAZVU RECEPTU
-/*
-
-function myFunction() {
-    var input, filter, ul, li, a, i, txtValue;
-    input = document.getElementById("myInput");
-    filter = input.value.toUpperCase();
-    ul = document.getElementById("myUL");
-    li = ul.getElementsByTagName("li");
-    for (i = 0; i < li.length; i++) {
-        a = li[i].getElementsByTagName("a")[0];
-        txtValue = a.textContent || a.innerText;
-        if (txtValue.toUpperCase().indexOf(filter) > -1) {
-            li[i].style.display = "";
-        } else {
-            li[i].style.display = "none";
+    for (i = 0; i < recipe.length; i++){
+        let box = recipe[i].getElementsByTagName("h3")[0];
+        let txtValue = box.textContent || box.innerText;
+        if (txtValue.toUpperCase().indexOf(bigLetters) > -1 ){
+            recipe[i].style.display = "";
+        }else {
+            recipe[i].style.display = "none";
         }
-    }
+
+    }   
+
 }
 
-*/
+
+
