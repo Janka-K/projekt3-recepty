@@ -50,7 +50,7 @@ function generateContent(){
 }
 
 
-function filterFunction(){
+function filterText(){
     let input = document.getElementById("hledat");
     let bigLetters= input.value.toUpperCase();
     let recipe = document.querySelectorAll(".recept");
@@ -69,4 +69,39 @@ function filterFunction(){
 }
 
 
+function category(){
 
+    let kategorie = document.querySelector(".kategorie");
+    let box = document.createElement("label");
+    box.htmlFor = 'kategorie';
+    box.innerHTML = "Kategorie";
+    kategorie.append(box);
+
+    let select = document.createElement("select");
+    select.id = 'kategorie';
+    kategorie.append(select);
+
+    let option = document.createElement("option");
+    option.value = " ";
+    select.appendChild(option);
+
+    let optionValue1 = document.createElement("option");
+    optionValue1.innerHTML = 'Snidane';
+    select.appendChild(optionValue1);
+
+    let optionValue2 = document.createElement('option');
+    optionValue2.innerHTML = 'Hlavni jidlo';
+    select.appendChild(optionValue2);
+
+    let optionValue3 = document.createElement('option');
+    optionValue3.innerHTML = 'Dezert';
+    select.appendChild(optionValue3);
+
+
+}
+
+category();
+
+
+// PREDELAT FUNKCI CATEGORY NA FUNKCI S FOR CYKLEM,ABY SE JEDNOTLIVE KATEGORIE PLNILY ZE SEZNAMU OBJEKTU A NEBYLY HARD CODOVANY
+// JE POTREBA FUNKCI NAPOJIT NA NEJAKY EVENT, ABY SE FILTROVALA JEDNOTLIVA JIDLA
