@@ -19,6 +19,8 @@ recept-hodnoceni, recept-nazev, recept-popis.
 */
 
 generateContent();
+categoryList();
+sortingList();
 
 function generateContent(){
 
@@ -69,7 +71,7 @@ function filterText(){
 }
 
 
-function category(){
+function categoryList(){
 
     let kategorie = document.querySelector(".kategorie");
     let box = document.createElement("label");
@@ -85,23 +87,48 @@ function category(){
     option.value = " ";
     select.appendChild(option);
 
-    let optionValue1 = document.createElement("option");
-    optionValue1.innerHTML = 'Snidane';
-    select.appendChild(optionValue1);
+    let categoryList = [...new Set(recepty.map((item) => item.kategorie))]; // vytvoreni seznamu unikatnich hodnot - vyber unikatnich kategorii
+    let tagList = [...new Set(recepty.map((item) => item.stitek))];
+    for(i = 0; i < categoryList.length; i++){
+        let optionValue = document.createElement("option");
+        optionValue.innerHTML = categoryList[i];
+        optionValue.value = tagList[i];
+        select.appendChild(optionValue);
+    }
 
-    let optionValue2 = document.createElement('option');
-    optionValue2.innerHTML = 'Hlavni jidlo';
-    select.appendChild(optionValue2);
-
-    let optionValue3 = document.createElement('option');
-    optionValue3.innerHTML = 'Dezert';
-    select.appendChild(optionValue3);
-
-
-}
-
-category();
+    }
 
 
-// PREDELAT FUNKCI CATEGORY NA FUNKCI S FOR CYKLEM,ABY SE JEDNOTLIVE KATEGORIE PLNILY ZE SEZNAMU OBJEKTU A NEBYLY HARD CODOVANY
-// JE POTREBA FUNKCI NAPOJIT NA NEJAKY EVENT, ABY SE FILTROVALA JEDNOTLIVA JIDLA
+    function sortingList(){
+        let razeni = document.querySelector(".razeni");
+        let box = document.createElement("label");
+        box.htmlFor = "razeni";
+        box.innerHTML = "Seřadit";
+        razeni.append(box);
+
+        let select = document.createElement("select");
+        select.id = "razeni";
+        razeni.append(select);
+
+        let option = document.createElement("option");
+        option.value = " ";
+        select.appendChild(option);
+
+        let option1 = document.createElement("option");
+        option1.value = "1";
+        option1.innerHTML = "Od nejlepších";
+        select.appendChild(option1);
+
+        let option2 = document.createElement("option");
+        option2.value = "2";
+        option2.innerHTML = "Od nejhorších";
+        select.appendChild(option2);
+
+
+    }
+
+  
+
+// je potreba vyresit filtrovani podle kategorie
+// je potreba vyresit filtrovani podle oblibenosti (poctu hvezdicek)
+// je potreba vyresit proklik receptu na hlavni stranku
