@@ -114,17 +114,15 @@ function categoryList(){
         option.value = " ";
         select.appendChild(option);
 
-        let option1 = document.createElement("option");
-        option1.value = "1";
-        option1.innerHTML = "Od nejlepších";
-        select.appendChild(option1);
+        for (i = 0; i < 2; i++){
+            dropDown= ['Od nejlepších', 'Od nejhorších'];
 
-        let option2 = document.createElement("option");
-        option2.value = "2";
-        option2.innerHTML = "Od nejhorších";
-        select.appendChild(option2);
-
-
+            let option = document.createElement("option");
+            option.value = i + 1 ;
+            option.innerHTML = dropDown[i];
+            select.appendChild(option);
+            
+        }
     }
 
   
