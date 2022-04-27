@@ -21,14 +21,16 @@ recept-hodnoceni, recept-nazev, recept-popis.
 generateContent();
 categoryList();
 sortingList();
+chooseRecipe();
 
 function generateContent(){
 
     let body = document.getElementById("recepty");
 
-    for (i = 0; i < recepty.length; i++){
+    for (let i = 0; i < recepty.length; i++){
         let box = document.createElement('div');
         box.className = "recept";
+        box.dataset.item = i;
         body.appendChild(box);
 
         let content = document.createElement("div");
@@ -57,7 +59,7 @@ function filterText(){
     let bigLetters= input.value.toUpperCase();
     let recipe = document.querySelectorAll(".recept");
 
-    for (i = 0; i < recipe.length; i++){
+    for (let i = 0; i < recipe.length; i++){
         let box = recipe[i].getElementsByTagName("h3")[0];
         let txtValue = box.textContent || box.innerText;
         if (txtValue.toUpperCase().indexOf(bigLetters) > -1 ){
@@ -89,7 +91,7 @@ function categoryList(){
 
     let categoryList = [...new Set(recepty.map((item) => item.kategorie))]; // vytvoreni seznamu unikatnich hodnot - vyber unikatnich kategorii
     let tagList = [...new Set(recepty.map((item) => item.stitek))];
-    for(i = 0; i < categoryList.length; i++){
+    for(let i = 0; i < categoryList.length; i++){
         let optionValue = document.createElement("option");
         optionValue.innerHTML = categoryList[i];
         optionValue.value = tagList[i];
@@ -100,21 +102,21 @@ function categoryList(){
 
 
     function sortingList(){
-        let razeni = document.querySelector(".razeni");
+        let sorting = document.querySelector(".razeni");
         let box = document.createElement("label");
         box.htmlFor = "razeni";
         box.innerHTML = "Seřadit";
-        razeni.append(box);
+        sorting.append(box);
 
         let select = document.createElement("select");
         select.id = "razeni";
-        razeni.append(select);
+        sorting.append(select);
 
         let option = document.createElement("option");
         option.value = " ";
         select.appendChild(option);
 
-        for (i = 0; i < 2; i++){
+        for (let i = 0; i < 2; i++){
             dropDown= ['Od nejlepších', 'Od nejhorších'];
 
             let option = document.createElement("option");
@@ -125,8 +127,55 @@ function categoryList(){
         }
     }
 
-  
+
+
+function chooseRecipe(){
+    let clickedRecipe;
+
+    let recipes = document.querySelectorAll(".recept");
+    console.log("recepty");
+    console.log(recipes);
+    let data = Array.from(recipes, recipe => recipe.dataset.item);
+    console.log("data");
+    console.log(data);
+
+    for(let i = 0; i < recipes.length; i++){
+        recipes[i].addEventListener('click', function(){
+
+            clickedRecipe = Number(data[i]);
+
+
+            let boxPicture = document.querySelector(".recept-detail-obrazek");
+            let boxCategory = document.querySelector(".recept-kategorie");
+            let boxRating = document.querySelector (".recept-hodnoceni");
+            let boxNameReceipt = document.querySelector (".recept-detail-info");
+            
+
+            let picture = document.getElementById("recept-foto");
+            let category = document.getElementById("recept-kategorie");
+            let rating = document.getElementById("recept-hodnoceni");
+            let name = document.getElementById("recept-nazev");
+            let description = document.getElementById("recept-popis");
+            
+            category.innerHTML = recepty[clickedRecipe].kategorie;
+            picture.src = recepty[clickedRecipe].img;
+            rating.innerHTML = recepty[clickedRecipe].hodnoceni;
+            name.innerHTML = recepty[clickedRecipe].nadpis;
+            description.innerHTML = recepty[clickedRecipe].popis;
+
+            boxPicture.appendChild(picture);
+            boxCategory.appendChild(category);
+            boxRating.appendChild(rating);
+            boxNameReceipt.appendChild(name);
+            boxNameReceipt.appendChild(description);
+        })
+
+    }
+}
+
+
+
 
 // je potreba vyresit filtrovani podle kategorie
 // je potreba vyresit filtrovani podle oblibenosti (poctu hvezdicek)
-// je potreba vyresit proklik receptu na hlavni stranku
+// *** NEPOVINNE / AZ BUDE VSE HOTOVO -->> PRI LOADU STRANKY ZAJISTIT NACTENI RECEPTU (NEJLEPSI, POSLEDNI, PRVNI...ETC);
