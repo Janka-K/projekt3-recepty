@@ -22,6 +22,8 @@ generateContent();
 categoryList();
 sortingList();
 chooseRecipe();
+receiptSorting();
+
 
 function generateContent(){
 
@@ -30,7 +32,7 @@ function generateContent(){
     for (let i = 0; i < recepty.length; i++){
         let box = document.createElement('div');
         box.className = "recept";
-        box.dataset.item = i;
+        box.dataset.item = i; // pridani datasetu ke kazdemu receptu
         body.appendChild(box);
 
         let content = document.createElement("div");
@@ -90,11 +92,12 @@ function categoryList(){
     select.appendChild(option);
 
     let categoryList = [...new Set(recepty.map((item) => item.kategorie))]; // vytvoreni seznamu unikatnich hodnot - vyber unikatnich kategorii
-    let tagList = [...new Set(recepty.map((item) => item.stitek))];
+    //let tagList = [...new Set(recepty.map((item) => item.stitek))];
     for(let i = 0; i < categoryList.length; i++){
         let optionValue = document.createElement("option");
         optionValue.innerHTML = categoryList[i];
-        optionValue.value = tagList[i];
+       // optionValue.value = tagList[i];
+        optionValue.dataset.item = i;  //pridani datasetu na jednotlive polozky comboboxu 
         select.appendChild(optionValue);
     }
 
@@ -128,8 +131,8 @@ function categoryList(){
     }
 
 
-
 function chooseRecipe(){
+
     let clickedRecipe;
 
     let recipes = document.querySelectorAll(".recept");
@@ -174,8 +177,77 @@ function chooseRecipe(){
 }
 
 
+function receiptSorting(){
+    
+    let select = document.getElementById("razeni");
+
+    select.addEventListener('change',function(){
+        if(select.value === "1"){
+            for (let i=0; i < recepty.length; i++){
+                let parent = document.getElementById("recepty");
+                let child = document.querySelector(".recept");
+                parent.removeChild(child);
+            }
+            
+            recepty.reverse(recepty.sort(function(a,b){
+                if (a.hodnoceni < b.hodnoceni){
+                    return -1
+                }
+                if (a.hodnoceni > b.hodnoceni){
+                    return 1;
+                }
+                return 0;
+            }))
+            generateContent();
+    
+            
+        
+        }else if (select.value === "2"){
+
+            for (let i=0; i < recepty.length; i++){
+                let parent = document.getElementById("recepty");
+                let child = document.querySelector(".recept");
+                parent.removeChild(child);
+            }
+
+            recepty.sort(function(a,b){
+                if (a.hodnoceni < b.hodnoceni){
+                    return -1;
+                }
+                if (a.hodnoceni > b.hodnoceni){
+                    return 1;
+                }
+                return 0;
+            })
+            generateContent();
+            
+        }
+    
+
+    })
+
+}
+
+
+
+/*
+function ratingSorting( a, b )
+  {
+  if ( a.hodnoceni < b.hodnoceni){
+    return -1;
+  }
+  if ( a.hodnoceni > b.hodnoceni){
+    return 1;
+  }
+  return 0;
+}
+
+*/
+
+
+
 
 
 // je potreba vyresit filtrovani podle kategorie
-// je potreba vyresit filtrovani podle oblibenosti (poctu hvezdicek)
 // *** NEPOVINNE / AZ BUDE VSE HOTOVO -->> PRI LOADU STRANKY ZAJISTIT NACTENI RECEPTU (NEJLEPSI, POSLEDNI, PRVNI...ETC);
+
