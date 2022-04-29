@@ -22,7 +22,7 @@ generateContent();
 categoryList();
 sortingList();
 chooseRecipe();
-receiptSorting();
+receiptSortingFilter();
 
 
 function generateContent(){
@@ -32,7 +32,7 @@ function generateContent(){
     for (let i = 0; i < recepty.length; i++){
         let box = document.createElement('div');
         box.className = "recept";
-        box.dataset.item = i; // pridani datasetu ke kazdemu receptu
+        box.dataset.item = i;
         body.appendChild(box);
 
         let content = document.createElement("div");
@@ -92,12 +92,13 @@ function categoryList(){
     select.appendChild(option);
 
     let categoryList = [...new Set(recepty.map((item) => item.kategorie))]; // vytvoreni seznamu unikatnich hodnot - vyber unikatnich kategorii
-    //let tagList = [...new Set(recepty.map((item) => item.stitek))];
+    categoryList.reverse();
     for(let i = 0; i < categoryList.length; i++){
         let optionValue = document.createElement("option");
         optionValue.innerHTML = categoryList[i];
        // optionValue.value = tagList[i];
-        optionValue.dataset.item = i;  //pridani datasetu na jednotlive polozky comboboxu 
+        //optionValue.dataset.item = i;  //pridani datasetu na jednotlive polozky comboboxu 
+        optionValue.value = i;
         select.appendChild(optionValue);
     }
 
@@ -128,6 +129,8 @@ function categoryList(){
             select.appendChild(option);
             
         }
+
+
     }
 
 
@@ -177,9 +180,11 @@ function chooseRecipe(){
 }
 
 
-function receiptSorting(){
+function receiptSortingFilter(){
     
     let select = document.getElementById("razeni");
+
+
 
     select.addEventListener('change',function(){
         if(select.value === "1"){
@@ -187,6 +192,9 @@ function receiptSorting(){
                 let parent = document.getElementById("recepty");
                 let child = document.querySelector(".recept");
                 parent.removeChild(child);
+
+        
+            
             }
             
             recepty.reverse(recepty.sort(function(a,b){
@@ -197,10 +205,11 @@ function receiptSorting(){
                     return 1;
                 }
                 return 0;
+        
             }))
             generateContent();
-    
-            
+            chooseRecipe();
+        
         
         }else if (select.value === "2"){
 
@@ -220,15 +229,95 @@ function receiptSorting(){
                 return 0;
             })
             generateContent();
+            chooseRecipe();
             
         }
     
-
     })
 
 }
 
 
+
+function categorySortingFilter(){
+    
+    let select = document.getElementById("kategorie");
+    let collectedCategory;
+ 
+
+    select.addEventListener('change',function(){
+        
+
+        if(select.value === "0"){
+            collectedCategory = [];
+            for (let i = 0; i < recepty.length; i++){
+            
+                if (recepty[i].stitek === "snidane"){
+                    collectedCategory.push(recepty[i])
+                    console.log(collectedCategory);
+
+    
+                }
+    
+            }
+
+           
+
+        }else if(select.value ==="1"){
+            collectedCategory = [];
+            for (let i =0; i < recepty.length; i++){
+
+                if (recepty[i].stitek === "hlavniJidlo"){
+                    collectedCategory.push(recepty[i])
+                    console.log(collectedCategory);
+                }
+            }
+        }else if(select.value === "2"){
+            collectedCategory = [];
+        for (let i = 0; i < recepty.length; i++){
+            if(recepty[i].stitek === "dezert"){
+                collectedCategory.push(recepty[i]);
+                console.log(collectedCategory);
+            }
+        }
+        }
+       
+  
+    })
+}
+
+
+                   
+categorySortingFilter();
+
+
+
+
+/*
+let tagList = [...new Set(recepty.map((item) => item.stitek))];
+
+console.log(tagList.reverse());
+
+/*
+
+let input = document.getElementById("hledat");
+let bigLetters= input.value.toUpperCase();
+let recipe = document.querySelectorAll(".recept");
+
+for (let i = 0; i < recipe.length; i++){
+    let box = recipe[i].getElementsByTagName("h3")[0];
+    let txtValue = box.textContent || box.innerText;
+    if (txtValue.toUpperCase().indexOf(bigLetters) > -1 ){
+        recipe[i].style.display = "";
+    }else {
+        recipe[i].style.display = "none";
+    }
+
+}   
+
+}
+
+*/
 
 /*
 function ratingSorting( a, b )
