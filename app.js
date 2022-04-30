@@ -26,7 +26,15 @@ receiptSortingFilter();
 categorySortingFilter();
 
 
+let middleBox = document.querySelector(".recept-detail");
+middleBox.style.display = "none";
+
+
+
 function generateContent(receiptList){
+
+    
+
 
     let body = document.getElementById("recepty");
 
@@ -52,12 +60,15 @@ function generateContent(receiptList){
         header.innerHTML = receiptList[i].nadpis;
         textBox.append(header);
 
+   
+
+       
 
 
 
     }
-    let boxMiddle = document.querySelector(".recept-detail");
-    boxMiddle.style.display = "none";
+  
+ 
 }
 
 
@@ -144,6 +155,8 @@ function categoryList(){
 
 function chooseRecipe(receiptList){
 
+  
+
     let clickedRecipe;
 
     let recipes = document.querySelectorAll(".recept");
@@ -180,11 +193,15 @@ function chooseRecipe(receiptList){
             boxNameReceipt.appendChild(name);
             boxNameReceipt.appendChild(description);
 
-            let boxMiddle = document.querySelector(".recept-detail");
-            boxMiddle.style.display = "block";
+            let middleBox = document.querySelector(".recept-detail");
+            middleBox.style.display = "block";
+
+        
         })
+      
 
     }
+  
 }
 
 
@@ -345,7 +362,6 @@ function ratingSorting( a, b )
 
 
 // je potreba doresit scroll bar 
-// je potreba doresit prostredni stranku (aby byla ciste bila bez naznaku obrazku a kategorie a bylo do ni mozne prokliknout)
 // je potreba doresit ulozeni posledniho vybraneho receptu do LocalStorage
 
 
