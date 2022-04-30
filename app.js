@@ -21,15 +21,16 @@ recept-hodnoceni, recept-nazev, recept-popis.
 generateContent(recepty);
 categoryList();
 sortingList();
-chooseRecipe();
-receiptSortingFilter(recepty);
+chooseRecipe(recepty);
+receiptSortingFilter();
+categorySortingFilter();
 
 
-function generateContent(receptList){
+function generateContent(receiptList){
 
     let body = document.getElementById("recepty");
 
-    for (let i = 0; i < receptList.length; i++){
+    for (let i = 0; i < receiptList.length; i++){
         let box = document.createElement('div');
         box.className = "recept";
         box.dataset.item = i;
@@ -40,7 +41,7 @@ function generateContent(receptList){
         box.append(content);
 
         let picture = document.createElement("img");
-        picture.src = receptList[i].img;
+        picture.src = receiptList[i].img;
         content.append(picture);
 
         let textBox = document.createElement("div");
@@ -48,7 +49,7 @@ function generateContent(receptList){
         box.append(textBox);
 
         let header = document.createElement("h3");
-        header.innerHTML = receptList[i].nadpis;
+        header.innerHTML = receiptList[i].nadpis;
         textBox.append(header);
 
 
@@ -88,7 +89,7 @@ function categoryList(){
     kategorie.append(select);
 
     let option = document.createElement("option");
-    option.value = " ";
+    option.value = "a";
     select.appendChild(option);
 
     let categoryList = [...new Set(recepty.map((item) => item.kategorie))]; // vytvoreni seznamu unikatnich hodnot - vyber unikatnich kategorii
@@ -121,7 +122,7 @@ function categoryList(){
         select.appendChild(option);
 
         for (let i = 0; i < 2; i++){
-            dropDown= ['Od nejlepších', 'Od nejhorších'];
+            dropDown= ['Od nejlepších', 'Od nejhorších']; //opravit logiku
 
             let option = document.createElement("option");
             option.value = i + 1 ;
@@ -134,7 +135,7 @@ function categoryList(){
     }
 
 
-function chooseRecipe(){
+function chooseRecipe(receiptList){
 
     let clickedRecipe;
 
@@ -160,11 +161,11 @@ function chooseRecipe(){
             let name = document.getElementById("recept-nazev");
             let description = document.getElementById("recept-popis");
             
-            category.innerHTML = recepty[clickedRecipe].kategorie;
-            picture.src = recepty[clickedRecipe].img;
-            rating.innerHTML = recepty[clickedRecipe].hodnoceni;
-            name.innerHTML = recepty[clickedRecipe].nadpis;
-            description.innerHTML = recepty[clickedRecipe].popis;
+            category.innerHTML = receiptList[clickedRecipe].kategorie;
+            picture.src = receiptList[clickedRecipe].img;
+            rating.innerHTML = receiptList[clickedRecipe].hodnoceni;
+            name.innerHTML = receiptList[clickedRecipe].nadpis;
+            description.innerHTML = receiptList[clickedRecipe].popis;
 
             boxPicture.appendChild(picture);
             boxCategory.appendChild(category);
@@ -177,20 +178,22 @@ function chooseRecipe(){
 }
 
 
-function receiptSortingFilter(receptList){
+function receiptSortingFilter(){
+
+    let receptyCopy = [...recepty];
     
     let select = document.getElementById("razeni");
 
     select.addEventListener('change',function(){
         if(select.value === "1"){
-            for (let i=0; i < receptList.length; i++){
+            for (let i=0; i < receptyCopy.length; i++){
                 let parent = document.getElementById("recepty");
                 let child = document.querySelector(".recept");
                 parent.removeChild(child);
            
             }
             
-            receptList.reverse(receptList.sort(function(a,b){
+            receptyCopy.reverse(receptyCopy.sort(function(a,b){
                 if (a.hodnoceni < b.hodnoceni){
                     return -1
                 }
@@ -200,19 +203,19 @@ function receiptSortingFilter(receptList){
                 return 0;
         
             }))
-            generateContent(receptList);
-            chooseRecipe();
+            generateContent(receptyCopy);
+            chooseRecipe(receptyCopy);
         
         
         }else if (select.value === "2"){
 
-            for (let i=0; i < receptList.length; i++){
+            for (let i=0; i < receptyCopy.length; i++){
                 let parent = document.getElementById("recepty");
                 let child = document.querySelector(".recept");
                 parent.removeChild(child);
             }
 
-            receptList.sort(function(a,b){
+            receptyCopy.sort(function(a,b){
                 if (a.hodnoceni < b.hodnoceni){
                     return -1;
                 }
@@ -221,8 +224,8 @@ function receiptSortingFilter(receptList){
                 }
                 return 0;
             })
-            generateContent(receptList);
-            chooseRecipe();
+            generateContent(receptyCopy);
+            chooseRecipe(receptyCopy);
             
         }else if (select.value === "a"){
             for (let i=0; i < recepty.length; i++){
@@ -231,10 +234,8 @@ function receiptSortingFilter(receptList){
                 parent.removeChild(child);
             }
             generateContent(recepty);
-            chooseRecipe();
-            console.log("Posledni podminka");
-            console.log(recepty);
-
+            chooseRecipe(recepty);
+    
 
         }
     
@@ -242,61 +243,81 @@ function receiptSortingFilter(receptList){
 
 }
 
-
-
-
-
 function categorySortingFilter(){
-    
     let select = document.getElementById("kategorie");
     let recipes = document.getElementById("recepty");
-    let collectedCategory;
- 
-
-    select.addEventListener('change',function(){
-        
-
-        if(select.value === "0"){
-            collectedCategory = [];
-            for (let i = 0; i < recepty.length; i++){
-                if (recepty[i].stitek === "snidane"){
-                    collectedCategory.push(recepty[i]);  
-                    console.log(collectedCategory);
-                 
+    
 
     
+    let breakfast = [];
+
+    let mainMeal = [];
+
+    let sweets = [];
+    
+    for (let i=0; i < recepty.length; i++){
+        if(recepty[i].stitek === "snidane"){
+            breakfast.push(recepty[i]);
+        }else if(recepty[i].stitek === "hlavniJidlo"){
+            mainMeal.push(recepty[i]);
+        }else if(recepty[i].stitek === "dezert"){
+            sweets.push(recepty[i]);
+        }
+    }
+
+    select.addEventListener("change",function(){
+        if (select.value === "0"){
+            for(let i = 0; i < recepty.length; i++){
+                let child = document.querySelector(".recept");
+                if(child != null){
+                    recipes.removeChild(child);
                 }
                
             }
-
-           
-
-        }else if(select.value ==="1"){
-            collectedCategory = [];
-            for (let i =0; i < recepty.length; i++){
-
-                if (recepty[i].stitek === "hlavniJidlo"){
-                    collectedCategory.push(recepty[i])
-                    console.log(collectedCategory);
+            generateContent(breakfast);
+            chooseRecipe(breakfast);
+ 
+            
+        }else if (select.value === "1"){
+            for(let i=0; i < recepty.length;i++){
+                let child = document.querySelector(".recept");
+                if(child != null){
+                    recipes.removeChild(child);
+                }
+                
+            }
+            generateContent(mainMeal);
+            chooseRecipe(mainMeal);
+        }else if (select.value === "2"){
+            for(let i = 0; i < recepty.length; i++){
+                let child = document.querySelector(".recept");
+                if(child != null){
+                    recipes.removeChild(child);
+                }
+                
+            }
+            generateContent(sweets);
+            chooseRecipe(sweets);
+        }else if(select.value === "a"){
+            for(let i = 0; i < recepty.length; i++){
+                let child = document.querySelector(".recept");
+                if(child != null){
+                    recipes.removeChild(child);
                 }
             }
-
-        }else if(select.value === "2"){
-            collectedCategory = [];
-        for (let i = 0; i < recepty.length; i++){
-            if(recepty[i].stitek === "dezert"){
-                collectedCategory.push(recepty[i]);
-                console.log(collectedCategory);
-            }
+            generateContent(recepty);
+            chooseRecipe(recepty);
         }
-        }
-       
-  
+            
+        
+      
     })
-}
 
-                   
-categorySortingFilter();
+
+
+}
+                 
+
 
 
 
@@ -317,10 +338,7 @@ function ratingSorting( a, b )
 */
 
 
-
-// je potreba vyresit filtrovani podle kategorie - je potreba dokoncit
 // je potreba doresit scroll bar 
-// je potreba doresit vraceni receptu do vychoziho stavu pote co se nepouziva sortovaci combo box
 // je potreba doresit prostredni stranku (aby byla ciste bila bez naznaku obrazku a kategorie a bylo do ni mozne prokliknout)
 // je potreba doresit ulozeni posledniho vybraneho receptu do LocalStorage
 
