@@ -18,18 +18,18 @@ recept-hodnoceni, recept-nazev, recept-popis.
 6) Poslední vybraný recept ulož do Local Storage, aby se při novém otevření aplikace načetl.
 */
 
-generateContent();
+generateContent(recepty);
 categoryList();
 sortingList();
 chooseRecipe();
-receiptSortingFilter();
+receiptSortingFilter(recepty);
 
 
-function generateContent(){
+function generateContent(receptList){
 
     let body = document.getElementById("recepty");
 
-    for (let i = 0; i < recepty.length; i++){
+    for (let i = 0; i < receptList.length; i++){
         let box = document.createElement('div');
         box.className = "recept";
         box.dataset.item = i;
@@ -40,7 +40,7 @@ function generateContent(){
         box.append(content);
 
         let picture = document.createElement("img");
-        picture.src = recepty[i].img;
+        picture.src = receptList[i].img;
         content.append(picture);
 
         let textBox = document.createElement("div");
@@ -48,7 +48,7 @@ function generateContent(){
         box.append(textBox);
 
         let header = document.createElement("h3");
-        header.innerHTML = recepty[i].nadpis;
+        header.innerHTML = receptList[i].nadpis;
         textBox.append(header);
 
 
@@ -117,7 +117,7 @@ function categoryList(){
         sorting.append(select);
 
         let option = document.createElement("option");
-        option.value = " ";
+        option.value = "a";
         select.appendChild(option);
 
         for (let i = 0; i < 2; i++){
@@ -139,11 +139,8 @@ function chooseRecipe(){
     let clickedRecipe;
 
     let recipes = document.querySelectorAll(".recept");
-    console.log("recepty");
-    console.log(recipes);
     let data = Array.from(recipes, recipe => recipe.dataset.item);
-    console.log("data");
-    console.log(data);
+
 
     for(let i = 0; i < recipes.length; i++){
         recipes[i].addEventListener('click', function(){
@@ -180,24 +177,20 @@ function chooseRecipe(){
 }
 
 
-function receiptSortingFilter(){
+function receiptSortingFilter(receptList){
     
     let select = document.getElementById("razeni");
 
-
-
     select.addEventListener('change',function(){
         if(select.value === "1"){
-            for (let i=0; i < recepty.length; i++){
+            for (let i=0; i < receptList.length; i++){
                 let parent = document.getElementById("recepty");
                 let child = document.querySelector(".recept");
                 parent.removeChild(child);
-
-        
-            
+           
             }
             
-            recepty.reverse(recepty.sort(function(a,b){
+            receptList.reverse(receptList.sort(function(a,b){
                 if (a.hodnoceni < b.hodnoceni){
                     return -1
                 }
@@ -207,19 +200,19 @@ function receiptSortingFilter(){
                 return 0;
         
             }))
-            generateContent();
+            generateContent(receptList);
             chooseRecipe();
         
         
         }else if (select.value === "2"){
 
-            for (let i=0; i < recepty.length; i++){
+            for (let i=0; i < receptList.length; i++){
                 let parent = document.getElementById("recepty");
                 let child = document.querySelector(".recept");
                 parent.removeChild(child);
             }
 
-            recepty.sort(function(a,b){
+            receptList.sort(function(a,b){
                 if (a.hodnoceni < b.hodnoceni){
                     return -1;
                 }
@@ -228,9 +221,21 @@ function receiptSortingFilter(){
                 }
                 return 0;
             })
-            generateContent();
+            generateContent(receptList);
             chooseRecipe();
             
+        }else if (select.value === "a"){
+            for (let i=0; i < recepty.length; i++){
+                let parent = document.getElementById("recepty");
+                let child = document.querySelector(".recept");
+                parent.removeChild(child);
+            }
+            generateContent(recepty);
+            chooseRecipe();
+            console.log("Posledni podminka");
+            console.log(recepty);
+
+
         }
     
     })
@@ -239,9 +244,12 @@ function receiptSortingFilter(){
 
 
 
+
+
 function categorySortingFilter(){
     
     let select = document.getElementById("kategorie");
+    let recipes = document.getElementById("recepty");
     let collectedCategory;
  
 
@@ -251,14 +259,14 @@ function categorySortingFilter(){
         if(select.value === "0"){
             collectedCategory = [];
             for (let i = 0; i < recepty.length; i++){
-            
                 if (recepty[i].stitek === "snidane"){
-                    collectedCategory.push(recepty[i])
+                    collectedCategory.push(recepty[i]);  
                     console.log(collectedCategory);
+                 
 
     
                 }
-    
+               
             }
 
            
@@ -272,6 +280,7 @@ function categorySortingFilter(){
                     console.log(collectedCategory);
                 }
             }
+
         }else if(select.value === "2"){
             collectedCategory = [];
         for (let i = 0; i < recepty.length; i++){
@@ -286,38 +295,12 @@ function categorySortingFilter(){
     })
 }
 
-
                    
 categorySortingFilter();
 
 
 
 
-/*
-let tagList = [...new Set(recepty.map((item) => item.stitek))];
-
-console.log(tagList.reverse());
-
-/*
-
-let input = document.getElementById("hledat");
-let bigLetters= input.value.toUpperCase();
-let recipe = document.querySelectorAll(".recept");
-
-for (let i = 0; i < recipe.length; i++){
-    let box = recipe[i].getElementsByTagName("h3")[0];
-    let txtValue = box.textContent || box.innerText;
-    if (txtValue.toUpperCase().indexOf(bigLetters) > -1 ){
-        recipe[i].style.display = "";
-    }else {
-        recipe[i].style.display = "none";
-    }
-
-}   
-
-}
-
-*/
 
 /*
 function ratingSorting( a, b )
@@ -335,8 +318,12 @@ function ratingSorting( a, b )
 
 
 
+// je potreba vyresit filtrovani podle kategorie - je potreba dokoncit
+// je potreba doresit scroll bar 
+// je potreba doresit vraceni receptu do vychoziho stavu pote co se nepouziva sortovaci combo box
+// je potreba doresit prostredni stranku (aby byla ciste bila bez naznaku obrazku a kategorie a bylo do ni mozne prokliknout)
+// je potreba doresit ulozeni posledniho vybraneho receptu do LocalStorage
 
 
-// je potreba vyresit filtrovani podle kategorie
 // *** NEPOVINNE / AZ BUDE VSE HOTOVO -->> PRI LOADU STRANKY ZAJISTIT NACTENI RECEPTU (NEJLEPSI, POSLEDNI, PRVNI...ETC);
 
