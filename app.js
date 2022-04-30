@@ -53,7 +53,11 @@ function generateContent(receiptList){
         textBox.append(header);
 
 
+
+
     }
+    let boxMiddle = document.querySelector(".recept-detail");
+    boxMiddle.style.display = "none";
 }
 
 
@@ -175,6 +179,9 @@ function chooseRecipe(receiptList){
             boxRating.appendChild(rating);
             boxNameReceipt.appendChild(name);
             boxNameReceipt.appendChild(description);
+
+            let boxMiddle = document.querySelector(".recept-detail");
+            boxMiddle.style.display = "block";
         })
 
     }
