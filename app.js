@@ -107,6 +107,9 @@ function categoryList(){
 
 
     function sortingList(){
+
+        dropDown= ['Od nejlepších', 'Od nejhorších'];
+
         let sorting = document.querySelector(".razeni");
         let box = document.createElement("label");
         box.htmlFor = "razeni";
@@ -121,8 +124,10 @@ function categoryList(){
         option.value = " ";
         select.appendChild(option);
 
-        for (let i = 0; i < 2; i++){
-            dropDown= ['Od nejlepších', 'Od nejhorších']; //opravit logiku
+        
+
+        for (let i = 0; i < dropDown.length; i++){
+            
 
             let option = document.createElement("option");
             option.value = i + 1 ;
