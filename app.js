@@ -97,8 +97,6 @@ function categoryList(){
     for(let i = 0; i < categoryList.length; i++){
         let optionValue = document.createElement("option");
         optionValue.innerHTML = categoryList[i];
-       // optionValue.value = tagList[i];
-        //optionValue.dataset.item = i;  //pridani datasetu na jednotlive polozky comboboxu 
         optionValue.value = i;
         select.appendChild(optionValue);
     }
