@@ -89,7 +89,7 @@ function categoryList(){
     kategorie.append(select);
 
     let option = document.createElement("option");
-    option.value = "a";
+    option.value = " ";
     select.appendChild(option);
 
     let categoryList = [...new Set(recepty.map((item) => item.kategorie))]; // vytvoreni seznamu unikatnich hodnot - vyber unikatnich kategorii
@@ -118,7 +118,7 @@ function categoryList(){
         sorting.append(select);
 
         let option = document.createElement("option");
-        option.value = "a";
+        option.value = " ";
         select.appendChild(option);
 
         for (let i = 0; i < 2; i++){
@@ -227,7 +227,7 @@ function receiptSortingFilter(){
             generateContent(receptyCopy);
             chooseRecipe(receptyCopy);
             
-        }else if (select.value === "a"){
+        }else if (select.value === " "){
             for (let i=0; i < recepty.length; i++){
                 let parent = document.getElementById("recepty");
                 let child = document.querySelector(".recept");
@@ -298,7 +298,7 @@ function categorySortingFilter(){
             }
             generateContent(sweets);
             chooseRecipe(sweets);
-        }else if(select.value === "a"){
+        }else if(select.value === " "){
             for(let i = 0; i < recepty.length; i++){
                 let child = document.querySelector(".recept");
                 if(child != null){
@@ -317,10 +317,6 @@ function categorySortingFilter(){
 
 }
                  
-
-
-
-
 
 
 /*
