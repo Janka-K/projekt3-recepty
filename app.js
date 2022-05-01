@@ -25,335 +25,287 @@ chooseRecipe(recepty);
 receiptSortingFilter();
 categorySortingFilter();
 
+function generateContent(receiptList) {
+  let body = document.getElementById("recepty");
 
-let middleBox = document.querySelector(".recept-detail");
-middleBox.style.display = "none";
+  let valueLastClicked = localStorage.getItem("lastClickedRecipe"); // vytazeni dat z localStorage (skutecna data/null, lastClickedRecie -->> promenna, do ktere se ukladaji kliknute recepty )
 
+  if (valueLastClicked === null || valueLastClicked === undefined) { // overuje zda v localStorage je nejaka hodnota,pokud je localStorage prazdna -> zobrazi se prazdna stranka bez detaily receptu
+    let middleBox = document.querySelector(".recept-detail");
+    middleBox.style.display = "none";
+  } else {
+    let lastClicked = JSON.parse(localStorage.lastClickedRecipe); // v pripade, ze v localStorage je ulozeny nejaky obsah - provede parsovani ulozenych hodnot a vypise nize uvedeny kod
 
+    let boxPicture = document.querySelector(".recept-detail-obrazek"); // do budoucna kod na radcich 39 - 60 nahradit funkci, z duvodu casoveho nedostatku reseno takto
+    let boxCategory = document.querySelector(".recept-kategorie");
+    let boxRating = document.querySelector(".recept-hodnoceni");
+    let boxNameReceipt = document.querySelector(".recept-detail-info");
 
-function generateContent(receiptList){
+    let picture = document.getElementById("recept-foto");
+    let category = document.getElementById("recept-kategorie");
+    let rating = document.getElementById("recept-hodnoceni");
+    let name = document.getElementById("recept-nazev");
+    let description = document.getElementById("recept-popis");
 
-    
+    category.innerHTML = lastClicked.kategorie;
+    picture.src = lastClicked.img;
+    rating.innerHTML = lastClicked.hodnoceni;
+    name.innerHTML = lastClicked.nadpis;
+    description.innerHTML = lastClicked.popis;
 
+    boxPicture.appendChild(picture);
+    boxCategory.appendChild(category);
+    boxRating.appendChild(rating);
+    boxNameReceipt.appendChild(name);
+    boxNameReceipt.appendChild(description);
+  }
 
-    let body = document.getElementById("recepty");
+  for (let i = 0; i < receiptList.length; i++) {
+    let box = document.createElement("div");
+    box.className = "recept";
+    box.dataset.item = i;
+    body.appendChild(box);
 
-    for (let i = 0; i < receiptList.length; i++){
-        let box = document.createElement('div');
-        box.className = "recept";
-        box.dataset.item = i;
-        body.appendChild(box);
+    let content = document.createElement("div");
+    content.className = "recept-obrazek";
+    box.append(content);
 
-        let content = document.createElement("div");
-        content.className = "recept-obrazek";
-        box.append(content);
+    let picture = document.createElement("img");
+    picture.src = receiptList[i].img;
+    content.append(picture);
 
-        let picture = document.createElement("img");
-        picture.src = receiptList[i].img;
-        content.append(picture);
+    let textBox = document.createElement("div");
+    textBox.className = "recept-info";
+    box.append(textBox);
 
-        let textBox = document.createElement("div");
-        textBox.className = "recept-info";
-        box.append(textBox);
+    let header = document.createElement("h3");
+    header.innerHTML = receiptList[i].nadpis;
+    textBox.append(header);
+  }
+}
 
-        let header = document.createElement("h3");
-        header.innerHTML = receiptList[i].nadpis;
-        textBox.append(header);
+function filterText() {
+  let input = document.getElementById("hledat");
+  let bigLetters = input.value.toUpperCase();
+  let recipe = document.querySelectorAll(".recept");
 
-   
-
-       
-
-
-
+  for (let i = 0; i < recipe.length; i++) {
+    let box = recipe[i].getElementsByTagName("h3")[0];
+    let txtValue = box.textContent || box.innerText;
+    if (txtValue.toUpperCase().indexOf(bigLetters) > -1) {
+      recipe[i].style.display = "";
+    } else {
+      recipe[i].style.display = "none";
     }
-  
- 
+  }
 }
 
+function categoryList() {
+  let kategorie = document.querySelector(".kategorie");
+  let box = document.createElement("label");
+  box.htmlFor = "kategorie";
+  box.innerHTML = "Kategorie";
+  kategorie.append(box);
 
-function filterText(){
-    let input = document.getElementById("hledat");
-    let bigLetters= input.value.toUpperCase();
-    let recipe = document.querySelectorAll(".recept");
+  let select = document.createElement("select");
+  select.id = "kategorie";
+  kategorie.append(select);
 
-    for (let i = 0; i < recipe.length; i++){
-        let box = recipe[i].getElementsByTagName("h3")[0];
-        let txtValue = box.textContent || box.innerText;
-        if (txtValue.toUpperCase().indexOf(bigLetters) > -1 ){
-            recipe[i].style.display = "";
-        }else {
-            recipe[i].style.display = "none";
-        }
+  let option = document.createElement("option");
+  option.value = " ";
+  select.appendChild(option);
 
-    }   
-
+  let categoryList = [...new Set(recepty.map((item) => item.kategorie))]; // vytvoreni seznamu unikatnich hodnot - vyber unikatnich kategorii
+  categoryList.reverse();
+  for (let i = 0; i < categoryList.length; i++) {
+    let optionValue = document.createElement("option");
+    optionValue.innerHTML = categoryList[i];
+    optionValue.value = i;
+    select.appendChild(optionValue);
+  }
 }
 
+function sortingList() {
+  dropDown = ["Od nejlepších", "Od nejhorších"];
 
-function categoryList(){
+  let sorting = document.querySelector(".razeni");
+  let box = document.createElement("label");
+  box.htmlFor = "razeni";
+  box.innerHTML = "Seřadit";
+  sorting.append(box);
 
-    let kategorie = document.querySelector(".kategorie");
-    let box = document.createElement("label");
-    box.htmlFor = 'kategorie';
-    box.innerHTML = "Kategorie";
-    kategorie.append(box);
+  let select = document.createElement("select");
+  select.id = "razeni";
+  sorting.append(select);
 
-    let select = document.createElement("select");
-    select.id = 'kategorie';
-    kategorie.append(select);
+  let option = document.createElement("option");
+  option.value = " ";
+  select.appendChild(option);
 
+  for (let i = 0; i < dropDown.length; i++) {
     let option = document.createElement("option");
-    option.value = " ";
+    option.value = i + 1;
+    option.innerHTML = dropDown[i];
     select.appendChild(option);
+  }
+}
 
-    let categoryList = [...new Set(recepty.map((item) => item.kategorie))]; // vytvoreni seznamu unikatnich hodnot - vyber unikatnich kategorii
-    categoryList.reverse();
-    for(let i = 0; i < categoryList.length; i++){
-        let optionValue = document.createElement("option");
-        optionValue.innerHTML = categoryList[i];
-        optionValue.value = i;
-        select.appendChild(optionValue);
-    }
+function chooseRecipe(receiptList) {
+  let clickedRecipe;
 
-    }
+  let recipes = document.querySelectorAll(".recept");
+  let data = Array.from(recipes, (recipe) => recipe.dataset.item);
 
+  for (let i = 0; i < recipes.length; i++) {
+    recipes[i].addEventListener("click", function () {
+      clickedRecipe = Number(data[i]);
 
-    function sortingList(){
+      let lastClickedRecipe = receiptList[clickedRecipe];
+      localStorage.lastClickedRecipe = JSON.stringify(lastClickedRecipe);
 
-        dropDown= ['Od nejlepších', 'Od nejhorších'];
+      let boxPicture = document.querySelector(".recept-detail-obrazek");
+      let boxCategory = document.querySelector(".recept-kategorie");
+      let boxRating = document.querySelector(".recept-hodnoceni");
+      let boxNameReceipt = document.querySelector(".recept-detail-info");
 
-        let sorting = document.querySelector(".razeni");
-        let box = document.createElement("label");
-        box.htmlFor = "razeni";
-        box.innerHTML = "Seřadit";
-        sorting.append(box);
+      let picture = document.getElementById("recept-foto");
+      let category = document.getElementById("recept-kategorie");
+      let rating = document.getElementById("recept-hodnoceni");
+      let name = document.getElementById("recept-nazev");
+      let description = document.getElementById("recept-popis");
 
-        let select = document.createElement("select");
-        select.id = "razeni";
-        sorting.append(select);
+      category.innerHTML = receiptList[clickedRecipe].kategorie;
+      picture.src = receiptList[clickedRecipe].img;
+      rating.innerHTML = receiptList[clickedRecipe].hodnoceni;
+      name.innerHTML = receiptList[clickedRecipe].nadpis;
+      description.innerHTML = receiptList[clickedRecipe].popis;
 
-        let option = document.createElement("option");
-        option.value = " ";
-        select.appendChild(option);
+      boxPicture.appendChild(picture);
+      boxCategory.appendChild(category);
+      boxRating.appendChild(rating);
+      boxNameReceipt.appendChild(name);
+      boxNameReceipt.appendChild(description);
 
-        
+      let middleBox = document.querySelector(".recept-detail");
+      middleBox.style.display = "block";
+    });
+  }
+}
 
-        for (let i = 0; i < dropDown.length; i++){
-            
+function receiptSortingFilter() {
+  let receptyCopy = [...recepty];
 
-            let option = document.createElement("option");
-            option.value = i + 1 ;
-            option.innerHTML = dropDown[i];
-            select.appendChild(option);
-            
-        }
+  let select = document.getElementById("razeni");
 
+  select.addEventListener("change", function () {
+    if (select.value === "1") {
+      for (let i = 0; i < receptyCopy.length; i++) {
+        let parent = document.getElementById("recepty");
+        let child = document.querySelector(".recept");
+        parent.removeChild(child);
+      }
 
-    }
-
-
-function chooseRecipe(receiptList){
-
-  
-
-    let clickedRecipe;
-
-    let recipes = document.querySelectorAll(".recept");
-    let data = Array.from(recipes, recipe => recipe.dataset.item);
-
-
-    for(let i = 0; i < recipes.length; i++){
-        recipes[i].addEventListener('click', function(){
-
-            clickedRecipe = Number(data[i]);
-
-            let storage = receiptList[clickedRecipe];
-            localStorage.storage = JSON.stringify(storage);
-            storage = JSON.parse(localStorage.storage);
-
-
-            let boxPicture = document.querySelector(".recept-detail-obrazek");
-            let boxCategory = document.querySelector(".recept-kategorie");
-            let boxRating = document.querySelector (".recept-hodnoceni");
-            let boxNameReceipt = document.querySelector (".recept-detail-info");
-            
-
-            let picture = document.getElementById("recept-foto");
-            let category = document.getElementById("recept-kategorie");
-            let rating = document.getElementById("recept-hodnoceni");
-            let name = document.getElementById("recept-nazev");
-            let description = document.getElementById("recept-popis");
-            
-            category.innerHTML = storage.kategorie;
-            picture.src = storage.img;
-            rating.innerHTML = storage.hodnoceni;
-            name.innerHTML = storage.nadpis;
-            description.innerHTML = storage.popis;
-
-            boxPicture.appendChild(picture);
-            boxCategory.appendChild(category);
-            boxRating.appendChild(rating);
-            boxNameReceipt.appendChild(name);
-            boxNameReceipt.appendChild(description);
-
-            
-            let middleBox = document.querySelector(".recept-detail");
-            middleBox.style.display = "block";
-
-           
+      receptyCopy.reverse(
+        receptyCopy.sort(function (a, b) {
+          if (a.hodnoceni < b.hodnoceni) {
+            return -1;
+          }
+          if (a.hodnoceni > b.hodnoceni) {
+            return 1;
+          }
+          return 0;
         })
-      
+      );
+      generateContent(receptyCopy);
+      chooseRecipe(receptyCopy);
+    } else if (select.value === "2") {
+      for (let i = 0; i < receptyCopy.length; i++) {
+        let parent = document.getElementById("recepty");
+        let child = document.querySelector(".recept");
+        parent.removeChild(child);
+      }
 
+      receptyCopy.sort(function (a, b) {
+        if (a.hodnoceni < b.hodnoceni) {
+          return -1;
+        }
+        if (a.hodnoceni > b.hodnoceni) {
+          return 1;
+        }
+        return 0;
+      });
+      generateContent(receptyCopy);
+      chooseRecipe(receptyCopy);
+    } else if (select.value === " ") {
+      for (let i = 0; i < recepty.length; i++) {
+        let parent = document.getElementById("recepty");
+        let child = document.querySelector(".recept");
+        parent.removeChild(child);
+      }
+      generateContent(recepty);
+      chooseRecipe(recepty);
     }
-  
+  });
 }
 
+function categorySortingFilter() {
+  let select = document.getElementById("kategorie");
+  let recipes = document.getElementById("recepty");
 
-function receiptSortingFilter(){
+  let breakfast = [];
 
-    let receptyCopy = [...recepty];
-    
-    let select = document.getElementById("razeni");
+  let mainMeal = [];
 
-    select.addEventListener('change',function(){
-        if(select.value === "1"){
-            for (let i=0; i < receptyCopy.length; i++){
-                let parent = document.getElementById("recepty");
-                let child = document.querySelector(".recept");
-                parent.removeChild(child);
-           
-            }
-            
-            receptyCopy.reverse(receptyCopy.sort(function(a,b){
-                if (a.hodnoceni < b.hodnoceni){
-                    return -1
-                }
-                if (a.hodnoceni > b.hodnoceni){
-                    return 1;
-                }
-                return 0;
-        
-            }))
-            generateContent(receptyCopy);
-            chooseRecipe(receptyCopy);
-        
-        
-        }else if (select.value === "2"){
+  let sweets = [];
 
-            for (let i=0; i < receptyCopy.length; i++){
-                let parent = document.getElementById("recepty");
-                let child = document.querySelector(".recept");
-                parent.removeChild(child);
-            }
-
-            receptyCopy.sort(function(a,b){
-                if (a.hodnoceni < b.hodnoceni){
-                    return -1;
-                }
-                if (a.hodnoceni > b.hodnoceni){
-                    return 1;
-                }
-                return 0;
-            })
-            generateContent(receptyCopy);
-            chooseRecipe(receptyCopy);
-            
-        }else if (select.value === " "){
-            for (let i=0; i < recepty.length; i++){
-                let parent = document.getElementById("recepty");
-                let child = document.querySelector(".recept");
-                parent.removeChild(child);
-            }
-            generateContent(recepty);
-            chooseRecipe(recepty);
-    
-
-        }
-    
-    })
-
-}
-
-function categorySortingFilter(){
-    let select = document.getElementById("kategorie");
-    let recipes = document.getElementById("recepty");
-    
-
-    
-    let breakfast = [];
-
-    let mainMeal = [];
-
-    let sweets = [];
-    
-    for (let i=0; i < recepty.length; i++){
-        if(recepty[i].stitek === "snidane"){
-            breakfast.push(recepty[i]);
-        }else if(recepty[i].stitek === "hlavniJidlo"){
-            mainMeal.push(recepty[i]);
-        }else if(recepty[i].stitek === "dezert"){
-            sweets.push(recepty[i]);
-        }
+  for (let i = 0; i < recepty.length; i++) {
+    if (recepty[i].stitek === "snidane") {
+      breakfast.push(recepty[i]);
+    } else if (recepty[i].stitek === "hlavniJidlo") {
+      mainMeal.push(recepty[i]);
+    } else if (recepty[i].stitek === "dezert") {
+      sweets.push(recepty[i]);
     }
+  }
 
-    select.addEventListener("change",function(){
-        if (select.value === "0"){
-            for(let i = 0; i < recepty.length; i++){
-                let child = document.querySelector(".recept");
-                if(child != null){
-                    recipes.removeChild(child);
-                }
-               
-            }
-            generateContent(breakfast);
-            chooseRecipe(breakfast);
- 
-            
-        }else if (select.value === "1"){
-            for(let i=0; i < recepty.length;i++){
-                let child = document.querySelector(".recept");
-                if(child != null){
-                    recipes.removeChild(child);
-                }
-                
-            }
-            generateContent(mainMeal);
-            chooseRecipe(mainMeal);
-        }else if (select.value === "2"){
-            for(let i = 0; i < recepty.length; i++){
-                let child = document.querySelector(".recept");
-                if(child != null){
-                    recipes.removeChild(child);
-                }
-                
-            }
-            generateContent(sweets);
-            chooseRecipe(sweets);
-        }else if(select.value === " "){
-            for(let i = 0; i < recepty.length; i++){
-                let child = document.querySelector(".recept");
-                if(child != null){
-                    recipes.removeChild(child);
-                }
-            }
-            generateContent(recepty);
-            chooseRecipe(recepty);
+  select.addEventListener("change", function () {
+    if (select.value === "0") {
+      for (let i = 0; i < recepty.length; i++) {
+        let child = document.querySelector(".recept");
+        if (child != null) {
+          recipes.removeChild(child);
         }
-            
-        
-      
-    })
-
-
-
+      }
+      generateContent(breakfast);
+      chooseRecipe(breakfast);
+    } else if (select.value === "1") {
+      for (let i = 0; i < recepty.length; i++) {
+        let child = document.querySelector(".recept");
+        if (child != null) {
+          recipes.removeChild(child);
+        }
+      }
+      generateContent(mainMeal);
+      chooseRecipe(mainMeal);
+    } else if (select.value === "2") {
+      for (let i = 0; i < recepty.length; i++) {
+        let child = document.querySelector(".recept");
+        if (child != null) {
+          recipes.removeChild(child);
+        }
+      }
+      generateContent(sweets);
+      chooseRecipe(sweets);
+    } else if (select.value === " ") {
+      for (let i = 0; i < recepty.length; i++) {
+        let child = document.querySelector(".recept");
+        if (child != null) {
+          recipes.removeChild(child);
+        }
+      }
+      generateContent(recepty);
+      chooseRecipe(recepty);
+    }
+  });
 }
-                 
-
-
-// je potreba doresit scroll bar 
-// je potreba doresit ulozeni posledniho vybraneho receptu do LocalStorage
-
-
-// *** NEPOVINNE / AZ BUDE VSE HOTOVO -->> PRI LOADU STRANKY ZAJISTIT NACTENI RECEPTU (NEJLEPSI, POSLEDNI, PRVNI...ETC);
 
