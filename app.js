@@ -168,6 +168,10 @@ function chooseRecipe(receiptList){
 
             clickedRecipe = Number(data[i]);
 
+            let storage = receiptList[clickedRecipe];
+            localStorage.storage = JSON.stringify(storage);
+            storage = JSON.parse(localStorage.storage);
+
 
             let boxPicture = document.querySelector(".recept-detail-obrazek");
             let boxCategory = document.querySelector(".recept-kategorie");
@@ -181,11 +185,11 @@ function chooseRecipe(receiptList){
             let name = document.getElementById("recept-nazev");
             let description = document.getElementById("recept-popis");
             
-            category.innerHTML = receiptList[clickedRecipe].kategorie;
-            picture.src = receiptList[clickedRecipe].img;
-            rating.innerHTML = receiptList[clickedRecipe].hodnoceni;
-            name.innerHTML = receiptList[clickedRecipe].nadpis;
-            description.innerHTML = receiptList[clickedRecipe].popis;
+            category.innerHTML = storage.kategorie;
+            picture.src = storage.img;
+            rating.innerHTML = storage.hodnoceni;
+            name.innerHTML = storage.nadpis;
+            description.innerHTML = storage.popis;
 
             boxPicture.appendChild(picture);
             boxCategory.appendChild(category);
@@ -193,10 +197,11 @@ function chooseRecipe(receiptList){
             boxNameReceipt.appendChild(name);
             boxNameReceipt.appendChild(description);
 
+            
             let middleBox = document.querySelector(".recept-detail");
             middleBox.style.display = "block";
 
-        
+           
         })
       
 
@@ -344,21 +349,6 @@ function categorySortingFilter(){
 
 }
                  
-
-
-/*
-function ratingSorting( a, b )
-  {
-  if ( a.hodnoceni < b.hodnoceni){
-    return -1;
-  }
-  if ( a.hodnoceni > b.hodnoceni){
-    return 1;
-  }
-  return 0;
-}
-
-*/
 
 
 // je potreba doresit scroll bar 
